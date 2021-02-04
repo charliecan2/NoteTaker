@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 const fs = require('fs');
-const { json } = require('express');
 
-const PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -23,10 +24,6 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     addNotetoJson(req.body);
     res.json(parseData());
-})
-
-app.listen(PORT, () => {
-    console.log(`Listening to PORT: ${PORT}`);
 })
 
 function parseData(){
@@ -54,3 +51,7 @@ function updateDB(jsonData) {
     const data = JSON.stringify(jsonData);
     fs.writeFileSync(__dirname + '/db/db.json', data);
 }
+
+app.listen(PORT, () => {
+    console.log(`Listening to PORT: ${PORT}`);
+})
