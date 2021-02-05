@@ -8,7 +8,7 @@ const fs = require('fs');
 
 var PORT = process.env.PORT || 3001;
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 
@@ -19,31 +19,36 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 app.get('/api/notes', (req, res) => {
-    parseData();
-    res.json(parseData());
+    const data = parseData();
+    res.json(data);
 })
 app.post('/api/notes', (req, res) => {
-    addNotetoJson(req.body);
+    newNote(req.body);
     res.json(parseData());
 })
 
 function parseData(){
     const database = fs.readFileSync('./db/db.json')
     const parseData = JSON.parse(database);
+    console.log(parseData);
     return parseData;
 }
 
-function createNoteObject(data) {
+function noteObject(data) {
+    let dbArray = parseData();
+    let i = dbArray.length;
+    
     const obj = {
         title: data.title,
-        text: data.text
+        text: data.text,
+        id: i++
     }
-    return obj
+    return obj;
 }
 
-function addNotetoJson(note){
+function newNote(note){
     const json = parseData();
-    const newNote = createNoteObject(note);
+    const newNote = noteObject(note);
     json.push(newNote);
     updateDB(json);
 }
