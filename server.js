@@ -41,7 +41,7 @@ function noteObject(data) {
     const obj = {
         title: data.title,
         text: data.text,
-        id: i++
+        id: i + 1
     }
     return obj;
 }
